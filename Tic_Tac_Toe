@@ -1,0 +1,112 @@
+package tictactoe
+
+var input = mutableListOf(" ", " ", " ", " "," "," "," "," "," ")
+
+
+fun checkWinForX (): Boolean {
+    when {
+        input[0] == "X" && input[1] == "X" && input[2] == "X" -> return true
+        input[3] == "X" && input[4] == "X" && input[5] == "X" -> return true
+        input[6] == "X" && input[7] == "X" && input[8] == "X" -> return true
+        input[0] == "X" && input[4] == "X" && input[8] == "X" -> return true
+        input[6] == "X" && input[4] == "X" && input[2] == "X" -> return true
+        input[0] == "X" && input[3] == "X" && input[6] == "X" -> return true
+        input[1] == "X" && input[4] == "X" && input[7] == "X" -> return true
+        input[2] == "X" && input[5] == "X" && input[8] == "X" -> return true
+        else -> return false
+    }
+}
+
+fun checkWinForO (): Boolean {
+    when {
+        input[0] == "O" && input[1] == "O" && input[2] == "O" -> return true
+        input[3] == "O" && input[4] == "O" && input[5] == "O" -> return true
+        input[6] == "O" && input[7] == "O" && input[8] == "O" -> return true
+        input[0] == "O" && input[4] == "O" && input[8] == "O" -> return true
+        input[6] == "O" && input[4] == "O" && input[2] == "O" -> return true
+        input[0] == "O" && input[3] == "O" && input[6] == "O" -> return true
+        input[1] == "O" && input[4] == "O" && input[7] == "O" -> return true
+        input[2] == "O" && input[5] == "O" && input[8] == "O" -> return true
+        else -> return false
+    }
+}
+
+fun countChar (x: String) : Int {
+    var count = 0
+    for (i in 0..input.size - 1) {
+        if (input[i] == x) count++
+    }
+    return count
+}
+
+fun printGrid() {
+    println("---------")
+    println("| ${input[0]} ${input[1]} ${input[2]} |")
+    println("| ${input[3]} ${input[4]} ${input[5]} |")
+    println("| ${input[6]} ${input[7]} ${input[8]} |")
+    println("---------")
+}
+
+fun analyzeGame(): String {
+    when {
+        checkWinForX() == true && checkWinForO() == true 
+        || Math.abs((countChar("X") - countChar("O"))) >= 2 -> println("Impossible")
+
+        checkWinForX() == true -> println("X wins")
+        checkWinForO() == true -> println("O wins")
+        countChar(" ") == 0 -> println("Draw")
+        else -> return "Game not finished"
+    }
+    return "Game finished"
+}
+
+fun inputUser(ch: String) {
+    val numbers = "0123456789"
+    var check = false
+    var coords = listOf<String>("1","2")
+    while (check == false){
+        coords = readln().split(" ")
+        when {
+        (!numbers.contains(coords[0]) || !numbers.contains(coords[1])) -> {
+            println("You shoulder enter numbers!")
+        }
+        (coords[0].toInt() > 3 || coords[1].toInt() > 3 
+            || coords[0].toInt() < 1 || coords[1].toInt() < 1) -> {
+            println("Coordinates should be from 1 to 3!")
+        }
+        (input[convertCoordinates(coords[0].toInt(),coords[1].toInt())] == "X" 
+            || input[convertCoordinates(coords[0].toInt(),coords[1].toInt())] == "O") -> {
+            println("This cell is occupied! Choose another one!")
+        } 
+        else -> check = true
+    } 
+  }
+
+    input[convertCoordinates(coords[0].toInt(),coords[1].toInt())] = ch
+    printGrid()
+}
+
+fun convertCoordinates(a: Int, b: Int): Int {
+    when {
+        a == 1 && b == 1 -> return 0;
+        a == 1 && b == 2 -> return 1;
+        a == 1 && b == 3 -> return 2;
+        a == 2 && b == 1 -> return 3;
+        a == 2 && b == 2 -> return 4;
+        a == 2 && b == 3 -> return 5;
+        a == 3 && b == 1 -> return 6;
+        a == 3 && b == 2 -> return 7;
+        a == 3 && b == 3 -> return 8;
+        else -> return 0
+    } 
+}
+
+fun main() {
+    printGrid()
+    var round = 0
+    while(analyzeGame() == "Game not finished"){
+        if(round % 2 == 0) inputUser("X")
+        else inputUser("O")
+        round++
+    }
+}
